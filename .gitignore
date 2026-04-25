@@ -1,0 +1,49 @@
+# 忽略 Keil 个人界面布局文件
+*.uvguix.*
+*.uvgui.*
+
+# 忽略调试配置和缓存
+DebugConfig/
+JLinkLog.txt
+*.CGC
+*.SVD
+
+# 忽略编译过程产生的列表文件和中间文件
+*.lst
+*.map
+*.d
+*.crf
+*.o
+*.obj
+*.dep
+*.lnp
+*.htm
+*.build_log.htm
+*.sct
+*.scvd
+
+# 忽略编译生成的最终产物
+*.hex
+*.bin
+*.axf
+*.elf
+
+# 忽略 Keil 自动生成的输出文件夹
+Objects/
+Listings/
+APP/MDK-ARM/App1/
+APP/MDK-ARM/App2/
+Bootloader/MDK-ARM/Bootloader/
+
+# 忽略插件
+.claude/
+
+## 忽略 Python 虚拟环境
+.venv/
+venv/
+
+# 忽略 CubeMX 本地缓存（保留 .ioc 即可）
+*.mxproject
+
+# 忽略 OTA 脚本可能产生的临时标志文件
+PATCH_EOF
