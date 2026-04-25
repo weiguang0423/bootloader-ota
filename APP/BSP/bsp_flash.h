@@ -1,6 +1,21 @@
 #ifndef BL_FLASH_APP_H
 #define BL_FLASH_APP_H
 
+/* USER CODE BEGIN Header */
+/**
+    ******************************************************************************
+    * @file    bsp_flash.h
+    * @brief   Flash 操作抽象层接口声明。
+    ******************************************************************************
+    * @attention
+    *
+    * 封装 Flash 的扇区计算、擦除、写入、分区管理及启动信息维护。
+    * 上层模块通过此接口访问 Flash，不直接操作 HAL 层。
+    *
+    ******************************************************************************
+    */
+/* USER CODE END Header */
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "ota_config.h"
