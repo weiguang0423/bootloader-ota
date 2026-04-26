@@ -23,11 +23,11 @@
 
 typedef struct
 {
-    uint32_t magic;
-    uint32_t version;
-    uint32_t active_slot;
-    uint32_t confirmed;
-    uint32_t checksum;
+    uint32_t magic;         // 0x424C5354 ("BLST")，标识这是有效启动信息
+    uint32_t version;       // 0x00000002，结构体版本
+    uint32_t active_slot;   // 1=App1, 2=App2，当前应启动的分区
+    uint32_t confirmed;     // 0=未确认, 1=已确认
+    uint32_t checksum;      // XOR校验: magic ^ version ^ active_slot ^ confirmed ^ 0x5A5AA5A5
 } bl_boot_state_t;
 
 static inline uint32_t BL_BootState_CalcChecksum(const bl_boot_state_t *s)

@@ -104,12 +104,12 @@ void BL_DTU_Init(void)
         return;
     }
 
-    HAL_NVIC_SetPriority(BL_DTU_UART_IRQn, BL_DTU_UART_IRQ_PRIORITY, 0U);
-    HAL_NVIC_EnableIRQ(BL_DTU_UART_IRQn);
+    HAL_NVIC_SetPriority(BL_DTU_UART_IRQn, BL_DTU_UART_IRQ_PRIORITY, 0U);   //设置 USART3 中断的抢占优先级（由 BL_DTU_UART_IRQ_PRIORITY 配置）和子优先级（0）
+    HAL_NVIC_EnableIRQ(BL_DTU_UART_IRQn);                                   //使能 USART3 中断（NVIC 层面），CPU 才能响应这个外设的中断请求
 
-    __HAL_UART_CLEAR_OREFLAG(&s_dtu_uart);
-    __HAL_UART_ENABLE_IT(&s_dtu_uart, UART_IT_RXNE);
-    __HAL_UART_ENABLE_IT(&s_dtu_uart, UART_IT_ERR);
+    __HAL_UART_CLEAR_OREFLAG(&s_dtu_uart);            //清除溢出错误标志（OverRun Error）——防止之前残留的溢出标志导致无法正确接收新数据
+    __HAL_UART_ENABLE_IT(&s_dtu_uart, UART_IT_RXNE);  //使能 RXNE 中断（Receive Not Empty）——收到一个字节就触发中断，实现逐字节接收
+    __HAL_UART_ENABLE_IT(&s_dtu_uart, UART_IT_ERR);   //使能 错误中断——帧错误、噪声、溢出等错误发生时触发中断
 }
 
 /**
@@ -118,20 +118,20 @@ void BL_DTU_Init(void)
     */
 void BL_DTU_IRQHandler(void)
 {
-    USART_TypeDef *instance = s_dtu_uart.Instance;
-    uint32_t sr = instance->SR;
+    USART_TypeDef *instance = s_dtu_uart.Instance;        // 拿到 USART3 的寄存器基地址
+    uint32_t sr = instance->SR;                           // 读取状态寄存器 SR
 
-    if ((sr & USART_SR_RXNE) != 0U)
+    if ((sr & USART_SR_RXNE) != 0U)                       // RXNE = Receive Not Empty
     {
-        uint8_t byte = (uint8_t)(instance->DR & 0x00FFU);
+        uint8_t byte = (uint8_t)(instance->DR & 0x00FFU); // 从数据寄存器 DR 读取收到的字节
         (void)RingBuf_Put(byte);
         return;
     }
 
     if ((sr & BL_DTU_SR_ERROR_MASK) != 0U)
     {
-        volatile uint32_t dummy = instance->DR;
-        (void)dummy;
+        volatile uint32_t dummy = instance->DR;           // 读 DR 清掉错误标志（手册要求）
+        (void)dummy;                                      // 防止编译器警告未使用
     }
 }
 
@@ -188,7 +188,7 @@ uint16_t BL_DTU_ReadLine(char *buf, uint16_t max_len, uint32_t timeout_ms)
             {
                 buf[pos++] = (char)ch;
             }
-            if (ch == '\n')
+            if (ch == '\n')             //以 \n 结尾
             {
                 break;
             }
