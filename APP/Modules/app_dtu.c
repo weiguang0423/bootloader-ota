@@ -320,7 +320,7 @@ static bool DTU_ReadAskConnectState(bool *connected_out)
 {
     char resp[128];
     const char *p;
-    uint32_t value;
+    uint32_t value; //负责将内存中离散的字符（ASCII 码）拼接并转化为真正的数学数值
 
     if (connected_out == NULL)
     {
